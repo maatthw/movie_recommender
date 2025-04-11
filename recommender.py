@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 from utils import cosine_similarity
 
-def predict_user_user_rating(user_vector, item, df):
-    similar_users = df[df[item] != -1]
+def predict_user_user_rating(user_vector, item, user_item_matrix):
+    similar_users = user_item_matrix[user_item_matrix[item] != -1]
     similarities = []
 
     for i in range(len(similar_users)):
@@ -16,6 +16,26 @@ def predict_user_user_rating(user_vector, item, df):
     for i in range(len(similar_users)):
         rating = similar_users.iloc[i][item]
         sim = similarities[i]
+        numerator += sim * rating
+        denominator += abs(sim)
+
+    return numerator / denominator if denominator != 0 else np.nan
+
+def predict_item_item_rating(user_vector, target_movie, user_item_matrix):
+    user_ratings = user_vector[user_vector != -1]
+
+    numerator = 0
+    denominator = 0
+
+    for movie_title, rating in user_ratings.items():
+        if movie_title == target_movie:
+            continue
+
+        current_movie_vector = user_item_matrix[movie_title]
+        target_movie_vector = user_item_matrix[target_movie]
+
+        sim = cosine_similarity(current_movie_vector, target_movie_vector)
+
         numerator += sim * rating
         denominator += abs(sim)
 

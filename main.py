@@ -1,6 +1,6 @@
 from data_loader import load_data
 from utils import compute_movie_stats, compute_user_stats
-from recommender import create_user_item_matrix, predict_user_user_rating
+from recommender import create_user_item_matrix, predict_user_user_rating, predict_item_item_rating
 import pandas as pd
 
 ratings, users, movies = load_data("data/ratings.dat", "data/users.dat", "data/movies.dat")
